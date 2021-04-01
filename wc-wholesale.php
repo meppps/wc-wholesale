@@ -78,39 +78,21 @@ function filter_dropdown_variation_args( $args ) {
     $hidden = ['2-Pack','3-Pack'];
     
     if(! in_array( 'administrator', (array) $user->roles )){
-        echo 'user';
-        print_r($args['options']);
+        
         // Dont show "Choose an option"
         $args['show_option_none'] = false;
 
         // Remove the option values
         foreach( $args['options'] as $key => $option ){
-            // if( $option === "2-Pack" ) 
-            // if(in_array($option, $hidden))
+
             if(strpos($option, 'Pack') !== false || strpos($option, 'pack') !== false){
                 unset($args['options'][$key]);
             }
         }
         return $args;
     }else{
-        echo'admin';
-        // $args['options'] = $options;
-        // print_r($args['options']);
         return $args;
     }
 }
 
 
-function display_on_product_page(){
-    // global $woocommerce, $product, $post;
-    $user = wp_get_current_user();
-
-    $product_id = 38;
-    $product = wc_get_product($product_id);
-    $variations = $product->get_available_variations();
-   
-
-    if(is_single('38') && in_array( 'administrator', (array) $user->roles )){
-        echo 'Something......';
-    }
-}
