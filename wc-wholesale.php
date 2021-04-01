@@ -54,7 +54,7 @@ function filter_dropdown_variation_args( $args ) {
     $user = wp_get_current_user();
     $options = $args['options'];
     $hidden = ['2-Pack','3-Pack'];
-    print_r($user->roles);
+    
     if(! in_array( 'wholesale_customer', (array) $user->roles )){
         
         // Dont show "Choose an option"
