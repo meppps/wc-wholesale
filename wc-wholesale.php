@@ -46,29 +46,7 @@ add_filter( 'woocommerce_variable_price_html', 'wc_varb_price_range', 10, 2 );
 
 
 // // hide bulk from retail
-// function custom_woocommerce_dropdown_variation_attribute_options_html( $html, $args )
-// {
-//     $product = $args[ 'product' ];
-//     $attribute = $args[ 'attribute' ];
-//     $terms = wc_get_product_terms( $product->get_id(), $attribute, array( 'fields' => 'all' ) );
-//     $options = $args[ 'options' ];
-//     if ( empty( $options ) && !empty( $product ) && !empty( $attribute ) ) {
-//         $attributes = $product->get_variation_attributes();
-//         $options = $attributes[ $attribute ];
-//     }
 
-//     foreach ( $terms as $term ) {
-//         if ( in_array( $term->slug, $options ) && ***SOME CONDITION***) {
-//             $html = str_replace( '<option value="' . esc_attr( $term->slug ) . '" ', '<option hidden value="' . esc_attr( $term->slug ) . '" ', $html );
-//         }
-//     }
-//     return $html;
-// }
-// add_filter( 'woocommerce_dropdown_variation_attribute_options_html', 'custom_woocommerce_dropdown_variation_attribute_options_html', 10, 2 );
-
-
-// display on specific product page
-// add_action( 'woocommerce_before_main_content', 'display_on_product_page' );
 add_filter( 'woocommerce_dropdown_variation_attribute_options_args', 'filter_dropdown_variation_args', 10, 1 );
 
 function filter_dropdown_variation_args( $args ) {
@@ -76,8 +54,8 @@ function filter_dropdown_variation_args( $args ) {
     $user = wp_get_current_user();
     $options = $args['options'];
     $hidden = ['2-Pack','3-Pack'];
-    
-    if(! in_array( 'administrator', (array) $user->roles )){
+    print_r($user->roles);
+    if(! in_array( 'wholesale_customer', (array) $user->roles )){
         
         // Dont show "Choose an option"
         $args['show_option_none'] = false;
