@@ -74,3 +74,58 @@ function filter_dropdown_variation_args( $args ) {
 }
 
 
+// Replace add to cart btn with find distr. btn on product page
+function replace_addtocart_btn() {
+	
+	global $post;
+	$user = wp_get_current_user();
+	$user_exception = 'wholesale_customer';
+		
+	// Apply only to distributor only products
+	if ( has_term( 'distributor-only', 'product_cat', $post->ID ) ) {
+
+		// If user not distributor, change btn
+		if(! in_array( $user_exception, (array) $user->roles )){
+
+			// echo('You are NOT a distributor');
+
+			remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_add_to_cart', 30 );
+			add_action( 'woocommerce_single_product_summary', 'find_distr_button', 15 ); 
+	
+			function find_distr_button() {
+				$locator_url = 'https://stainoutsystem.com/find-a-store/';
+				echo '<a href="'.$locator_url.'"><button class="single_add_to_cart_button button">Find a distributor</button></a>';
+			};
+
+		}
+
+
+	
+	}
+ 
+}
+
+
+// Make products unpurchasable for non-distributors
+function non_purchasable( $purchasable, $product ){
+
+	global $post;
+	$user = wp_get_current_user();
+	$user_exception = 'wholesale_customer';
+
+	$terms = get_the_terms( $product->get_id(), 'product_cat' );
+	$cat_list = [];
+
+	forEach($terms as $term){
+		$cat_name = $term->slug;
+		array_push($cat_list, $cat_name);
+	}
+
+	// Distrubutor only product AND User is NOT distributor
+    if( in_array('distributor-only',$cat_list) && !in_array( $user_exception, (array) $user->roles ) )
+        $purchasable = false;
+    return $purchasable;
+}
+
+add_action('woocommerce_before_single_product','replace_addtocart_btn');
+add_filter( 'woocommerce_is_purchasable', 'non_purchasable', 10, 2 );
